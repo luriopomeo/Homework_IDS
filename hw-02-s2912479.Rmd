@@ -86,15 +86,27 @@ The Inter quartile range is very small compared to total range of data. Most the
 long_vs_short <- strava_runs |> 
   filter(!is.na(distance..m.)) |> 
   group_by(athlete) |> 
-  mutate(
-    l_or_s = case_when(
-      mean(distance..m. , na,rm + TRUE) < 7000 ~ "short",
-      mean(distance..m. , na,rm + TRUE)) > 13000 ~ "long",
-      TRUE ~ NA_character_)
-    ) |> 
-  filter(l_or_s != NA)
-long_vs_short  
-
+    mutate(
+      l_or_s = case_when(
+        mean(distance..m., na.rm = TRUE) < 7000 ~ "Short Distance Runner",
+        mean(distance..m., na.rm = TRUE) > 13000 ~ "Long Distance Runner",
+        TRUE ~ "NA" 
+      )) |> 
+  filter(l_or_s != "NA") |> 
+  ungroup(athlete) |> 
+  mutate(average.speed = distance..m./elapsed.time..s.)
+    
+long_vs_short |> 
+  ggplot(aes(x = distance..m., y = average.speed, colour = l_or_s)) +
+  geom_point(alpha = 0.2) +
+  geom_smooth(method = "lm", linewidth = 1, se = F ) +
+  theme_classic() +
+  labs(title = "Speed vs Distance for Long- and Short-Distance Runners",
+       subtitle = "Grouped by runners' average distance: >13 km vs <7 km",
+       x = "Run distance (km)",
+       y = "Run average speed (m/s)") + 
+  coord_fixed(5000) +
+  theme(legend.position = "bottom", legend.title = element_blank())
 
 
 
