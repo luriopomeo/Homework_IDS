@@ -27,10 +27,9 @@ data_5k_10k <- strava_runs %>%
   filter(!is.na(event))
 ```
 
-
 ## Exercise 1
 
-When you fill the missing part, remove the # symbol before running the code chunk and eval=FALSE
+When you fill the missing part, remove the \# symbol before running the code chunk and eval=FALSE
 
 ```{r ex1a, out.width="80%", eval=FALSE}
 data_5k_10k %>% 
@@ -44,57 +43,64 @@ data_5k_10k %>%
        y = "Frequencey", x = "Average Heart Rate")
 ```
 
-Mean Heart Rate = 148.4
-Median Heart Rate = 149.5
-SD of Measured Heart Rates = 19.7
+Mean Heart Rate = 148.4 Median Heart Rate = 149.5 SD of Measured Heart Rates = 19.7
 
-```{r ex1b, out.width="80%"}
+Most runners average heart rate between 130 and 170 beats per minute, implies large range of runners of different abilities participating in data submission. Either means some runers have either better cardio vascular system and do not need to go as hard (or just generally taking it easier) and some runners going harder pushing upper cardio vascular zones.
+
+```{r ex1b, echo=TRUE, out.width="80%"}
 data_5k_10k %>% 
   filter(gender == "F",
          event == "5k") |> 
   filter(!is.na(average.heart.rate..bpm.)) %>%
   ggplot(aes(x = average.heart.rate..bpm.)) +  
   geom_vline(aes(xintercept = mean(average.heart.rate..bpm.)),
-             color = "red", linetype = "dashed", linewidth = 1) +
-  geom_histogram(bins = 20) + 
+             color = "red", linetype = "dashed", linewidth = 1) + 
+  geom_histogram(bins = 20) +
   labs(title = "Histogram for Average Heart Rate of Female Runners on 5k Runs",
-       y = "Frequencey", x = "Average Heart Rate")
+       y = "Frequencey", x = "Average Heart Rate")+
+  geom_histogram(bins = 20 )
 
 ```
-Mean Heart Rate = 156.4
-Median Heart Rate = 156.7
-SD of Measured Heart Rates = 14.6
 
+Mean Heart Rate = 156.4 Median Heart Rate = 156.7 SD of Measured Heart Rates = 14.6
+
+Mean heart rate of female runner is a lot higher than mean for set, implies that female runners may find the run harder than male counter parts.
 
 ## Exercise 2
 
 ```{r ex2, out.width = "80%"}
-# Write your code to answer exercise 2a here
-
-
-
-
+filter(data_5k_10k, !is.na(gender)) |> 
+  ggplot() +
+    aes(y = elapsed.time..s., fill = event) +
+    geom_boxplot() +
+    facet_grid( gender ~ event, scales = "free" ) +
+    labs( y = "Elapsed Time",
+           title = "Length of Time Taken by Each Gender to Complete 5k and 10k Runs"            , subtitle = "box plot")
 ```
 
-_Write your text to answer exercise 2b here (Please delete this message before submission!)_
-
-
-
+The Inter quartile range is very small compared to total range of data. Most the serious runners lie in a small range of times whilst a few, perhaps beginner, runners take significantly longer to run the same distance - or, the times were recorded on routes which had significant elevation gain, making the run take longer as it is harder.
 
 ## Exercise 3
 
 ```{r ex3, out.width = "80%"}
-# Write your code to answer exercise 3 here
-
+long_vs_short <- strava_runs |> 
+  filter(!is.na(distance..m.)) |> 
+  group_by(athlete) |> 
+  mutate(
+    l_or_s = case_when(
+      mean(distance..m. , na,rm + TRUE) < 7000 ~ "short",
+      mean(distance..m. , na,rm + TRUE)) > 13000 ~ "long",
+      TRUE ~ NA_character_)
+    ) |> 
+  filter(l_or_s != NA)
+long_vs_short  
 
 
 
 
 ```
 
-
-_Write your text to answer exercise 3b here (Please delete this message before submission!)_
-
+*Write your text to answer exercise 3b here (Please delete this message before submission!)*
 
 ## Exercise 4
 
@@ -107,12 +113,4 @@ _Write your text to answer exercise 3b here (Please delete this message before s
 
 ```
 
-
-_Write your text to answer exercise 4b here (Please delete this message before submission!)_
-
-
-
-
-
-
-
+*Write your text to answer exercise 4b here (Please delete this message before submission!)*
