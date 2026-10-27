@@ -9,6 +9,7 @@ output: html_document
 ## **DO NOT EDIT THIS CODE CHUNK**
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(patchwork)
 ```
 
 ```{r}
@@ -90,14 +91,15 @@ long_vs_short <- strava_runs |>
       l_or_s = case_when(
         mean(distance..m., na.rm = TRUE) < 7000 ~ "Short Distance Runner",
         mean(distance..m., na.rm = TRUE) > 13000 ~ "Long Distance Runner",
-        TRUE ~ "NA" 
-      )) |> 
-  filter(l_or_s != "NA") |> 
+        TRUE ~ "Medium Distance Runner" ),
+      distance..km. = distance..m./1000
+      ) |> 
+  filter(l_or_s != "Medium Distance Runner") |> 
   ungroup(athlete) |> 
   mutate(average.speed = distance..m./elapsed.time..s.)
     
 long_vs_short |> 
-  ggplot(aes(x = distance..m., y = average.speed, colour = l_or_s)) +
+  ggplot(aes(x = distance..km., y = average.speed, colour = l_or_s)) +
   geom_point(alpha = 0.2) +
   geom_smooth(method = "lm", linewidth = 1, se = F ) +
   theme_classic() +
@@ -105,24 +107,37 @@ long_vs_short |>
        subtitle = "Grouped by runners' average distance: >13 km vs <7 km",
        x = "Run distance (km)",
        y = "Run average speed (m/s)") + 
-  coord_fixed(5000) +
+  coord_fixed( ratio = 3) +
   theme(legend.position = "bottom", legend.title = element_blank())
 
 
 
+  
 ```
 
 *Write your text to answer exercise 3b here (Please delete this message before submission!)*
 
+On average, according to the regression line, the long distance runners run faster for all length runs. However, the gap gets larger as the runs get longer and longer, this could be because all proffesional trained runners will naturally run faster no matter the length, but mostly train long runs to improve cardiovascular generally.
+
 ## Exercise 4
 
-```{r ex4, out.width = "80%"}
-# Write your code to answer exercise 4 here
+```{r ex4, out.width = "100%"}
 
+mean_stats_by_gender <- strava_runs |> 
+  filter(!is.na(gender)) |> 
+  group_by(gender) |> 
+  summarise(mean.distance..km. = mean(distance..m.)/1000,
+            mean.elapsed.time..mins. = mean(elapsed.time..s.)/60) |> 
+ ungroup()
 
+time_plot <- ggplot(mean_stats_by_gender, mapping = aes( x = gender,
+  y = mean.elapsed.time..mins., fill = gender)) +
+  geom_col( ) 
+distance_plot <- ggplot(mean_stats_by_gender, mapping = aes( x = gender, 
+  y = mean.distance..km., fill = gender)) +
+  geom_col( )
 
-
-
+time_plot + distance_plot
 ```
 
 *Write your text to answer exercise 4b here (Please delete this message before submission!)*
