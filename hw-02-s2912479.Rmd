@@ -108,7 +108,9 @@ long_vs_short |>
        x = "Run distance (km)",
        y = "Run average speed (m/s)") + 
   coord_fixed( ratio = 3) +
-  theme(legend.position = "bottom", legend.title = element_blank())
+  theme(legend.position = "bottom", legend.title = element_blank()) +
+  scale_colour_manual(values = c("Long Distance Runner" = "orange",
+                                 "Short Distance Runner" = "forestgreen"))
 
 
 
@@ -125,6 +127,7 @@ On average, according to the regression line, the long distance runners run fast
 
 mean_stats_by_gender <- strava_runs |> 
   filter(!is.na(gender)) |> 
+  mutate(gender = recode(gender, "M" = 'Male', "F" = 'Female')) |> 
   group_by(gender) |> 
   summarise(mean.distance..km. = mean(distance..m.)/1000,
             mean.elapsed.time..mins. = mean(elapsed.time..s.)/60) |> 
@@ -132,12 +135,22 @@ mean_stats_by_gender <- strava_runs |>
 
 time_plot <- ggplot(mean_stats_by_gender, mapping = aes( x = gender,
   y = mean.elapsed.time..mins., fill = gender)) +
-  geom_col( ) 
+  geom_col( ) +
+  labs( y = "Mean Duration of Run (minutes) ") +
+  theme(legend.position = "none", axis.title.x=element_blank()) 
+
 distance_plot <- ggplot(mean_stats_by_gender, mapping = aes( x = gender, 
   y = mean.distance..km., fill = gender)) +
-  geom_col( )
+  geom_col() +
+  labs( y = "Mean Distance Ran (kilometers)") +
+  theme(legend.position = "none", axis.title.x=element_blank())
 
-time_plot + distance_plot
+time_plot + distance_plot +
+  plot_annotation(
+    title = "Bar Charts for Mean Duration of a Single Run and Distance Ran by Gender",
+    theme = theme(
+      plot.title = element_text(size = 11, face = "bold", hjust = 0.5) 
+   ))
 ```
 
-*Write your text to answer exercise 4b here (Please delete this message before submission!)*
+The average duration of a run for both men and women is approximatley the same; however, for that same average run length, men typically run further. This could be due to their greater anareobic capacity and muscle density allowing them to travel further in the same length of time.
