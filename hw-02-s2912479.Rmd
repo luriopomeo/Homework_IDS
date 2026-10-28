@@ -75,7 +75,8 @@ filter(data_5k_10k, !is.na(gender)) |>
     geom_boxplot() +
     facet_grid( gender ~ event, scales = "free" ) +
     labs( y = "Elapsed Time",
-           title = "Length of Time Taken by Each Gender to Complete 5k and 10k Runs", subtitle = "box plot")
+           title = "Length of Time Taken by Each Gender to Complete 5k and 10k Runs", subtitle = "box plot") +
+    theme(axis.ticks.x=element_blank(), axis.text.x=element_blank())
 ```
 
 The Inter quartile range is very small compared to total range of data. Most the serious runners lie in a small range of times whilst a few, perhaps beginner, runners take significantly longer to run the same distance - or, the times were recorded on routes which had significant elevation gain, making the run take longer as it is harder.
