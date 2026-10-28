@@ -32,15 +32,16 @@ data_5k_10k <- strava_runs %>%
 
 When you fill the missing part, remove the \# symbol before running the code chunk and eval=FALSE
 
-```{r ex1a, out.width="80%", eval=FALSE}
+```{r ex1a, echo=TRUE, out.width="80%"}
 data_5k_10k %>% 
   filter(event == "5k") %>%
   filter(!is.na(average.heart.rate..bpm.)) %>%
   ggplot(aes(x = average.heart.rate..bpm.)) +
   geom_vline(aes(xintercept = mean(average.heart.rate..bpm.)),
              color = "red", linetype = "dashed", linewidth = 1) + 
-  geom_histogram(bins = 20) +
-  labs( title = "Histogram for Average Heart Rate of Runners on 5k Runs", y = "Frequency", x = "Average Heart Rate")
+    geom_histogram(bins = 20) +
+    labs( title = "Histogram for Average Heart Rate of Runners on 5k Runs", 
+        y = "Frequency", x = "Average Heart Rate")
 ```
 
 Mean Heart Rate = 148.4 Median Heart Rate = 149.5 SD of Measured Heart Rates = 19.7
