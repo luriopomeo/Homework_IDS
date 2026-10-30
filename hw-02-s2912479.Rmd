@@ -34,35 +34,38 @@ When you fill the missing part, remove the \# symbol before running the code chu
 
 ```{r ex1a, echo=TRUE, out.width="80%"}
 data_5k_10k %>% 
-  filter(event == "5k") %>%
+  filter(gender == "M") %>%
   filter(!is.na(average.heart.rate..bpm.)) %>%
-  ggplot(aes(x = average.heart.rate..bpm.)) +
+  ggplot(aes(x = average.heart.rate..bpm., alpha =.5)) +
   geom_vline(aes(xintercept = mean(average.heart.rate..bpm.)),
              color = "red", linetype = "dashed", linewidth = 1) + 
-    geom_histogram(bins = 20) +
-    labs( title = "Histogram for Average Heart Rate of Runners on 5k Runs", 
-        y = "Frequency", x = "Average Heart Rate")
+  geom_histogram(bins = 20) +
+  labs( title = "Histogram for Average Heart Rate of Male Runners", 
+        y = "Frequency", x = "Average Heart Rate") +
+  theme(legend.position = "none")
+
 ```
 
-Mean Heart Rate = 148.4 Median Heart Rate = 149.5 SD of Measured Heart Rates = 19.7
+
+Mean Heart Rate = 147.9
 
 Most runners average heart rate between 130 and 170 beats per minute, implies large range of runners of different abilities participating in data submission. Either means some runers have either better cardio vascular system and do not need to go as hard (or just generally taking it easier) and some runners going harder pushing upper cardio vascular zones.
 
 ```{r ex1b, echo=TRUE, out.width="80%"}
 data_5k_10k %>% 
-  filter(gender == "F",
-         event == "5k") |> 
+  filter(gender == "F") |> 
   filter(!is.na(average.heart.rate..bpm.)) %>%
-  ggplot(aes(x = average.heart.rate..bpm.)) +  
+  ggplot(aes(x = average.heart.rate..bpm., alpha = 0.5)) +  
   geom_vline(aes(xintercept = mean(average.heart.rate..bpm.)),
              color = "red", linetype = "dashed", linewidth = 1) + 
   geom_histogram(bins = 20) +
-  labs(title = "Histogram for Average Heart Rate of Female Runners on 5k Runs", y = "Frequencey", x = "Average Heart Rate")+
-  geom_histogram(bins = 20 )
+  labs(title = "Histogram for Average Heart Rate of Female Runners", y = "Frequencey", x = "Average Heart   Rate")+
+  geom_histogram(bins = 20 ) +
+  theme(legend.position = "none")
 
 ```
 
-Mean Heart Rate = 156.4 Median Heart Rate = 156.7 SD of Measured Heart Rates = 14.6
+Mean Heart Rate = 155.7 
 
 Mean heart rate of female runner is a lot higher than mean for set, implies that female runners may find the run harder than male counter parts.
 
